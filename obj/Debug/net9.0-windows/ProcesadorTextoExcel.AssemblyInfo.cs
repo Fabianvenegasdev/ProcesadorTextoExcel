@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProcesadorTextoExcel")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e7a09b991093cc0c5065690757cb65753a78d24e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+68b8e75163161c8470822074105c90fa887616eb")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProcesadorTextoExcel")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProcesadorTextoExcel")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
