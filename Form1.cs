@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using ClosedXML.Excel;
+using System.Net.Mail;
 
 namespace ProcesadorTextoExcel
 {
@@ -147,6 +148,7 @@ namespace ProcesadorTextoExcel
         private List<PersonaData> ExtraerDatos(string texto)
         {
             var personas = new List<PersonaData>();
+            var lineasInvalidas = new List<string>();
             
             // Dividir el texto en líneas
             var lineas = texto.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -160,7 +162,13 @@ namespace ProcesadorTextoExcel
                 {
                     string email = emailMatch.Value;
                     
-                    // Extraer el nombre que está antes del email
+                    // Validar el formato del email
+                    if (!EsEmailValido(email))
+                    {
+                        lineasInvalidas.Add(linea);
+                        continue;
+                    }
+                    
                     string nombreCompleto = linea.Substring(0, emailMatch.Index).Trim();
                     
                     // Dividir en nombre y apellido
@@ -189,12 +197,42 @@ namespace ProcesadorTextoExcel
                         Email = email
                     });
                 }
+                else
+                {
+                    lineasInvalidas.Add(linea);
+                }
+            }
+            
+            // Mostrar advertencia si hay emails inválidos
+            if (lineasInvalidas.Count > 0)
+            {
+                string mensaje = $"Se encontraron {lineasInvalidas.Count} líneas con formatos inválidos.\n";
+                mensaje += "Los emails deben tener formato: usuario@dominio.com\n\n";
+                mensaje += "Ejemplos inválidos:\n" + string.Join("\n", lineasInvalidas.Take(5));
+                
+                if (lineasInvalidas.Count > 5)
+                    mensaje += "\n... y " + (lineasInvalidas.Count - 5) + " más";
+                
+                MessageBox.Show(mensaje, "Advertencia - Emails inválidos", 
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             
             return personas;
         }
 
-        // Corregido para manejar posibles valores nulos
+        private bool EsEmailValido(string email)
+        {
+            try
+            {
+                var addr = new MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private void btnExportarExcel_Click(object? sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtRutaArchivo.Text))
